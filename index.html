@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>צ'אט בוט - RNF</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 30px; background: #f1f1f1; direction: rtl; text-align: center; }
+    .chat-box { background: white; max-width: 600px; margin: auto; padding: 20px; border-radius: 16px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    input[type=text] { width: 80%; padding: 12px; font-size: 16px; border-radius: 8px; border: 1px solid #ccc; }
+    button { padding: 12px 20px; font-size: 16px; border: none; border-radius: 8px; background: #007BFF; color: white; cursor: pointer; margin-right: 10px; }
+    #response { margin-top: 20px; background: #eee; padding: 15px; border-radius: 8px; min-height: 40px; }
+  </style>
+</head>
+<body>
+
+  <div class="chat-box">
+    <h2>שאל את הבוט שלנו</h2>
+    <input type="text" id="userInput" placeholder="כתוב שאלה כאן...">
+    <button onclick="sendMessage()">שלח</button>
+    <div id="response">כאן תופיע התשובה מהבוט...</div>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const message = document.getElementById("userInput").value;
+      const responseBox = document.getElementById("response");
+      responseBox.innerText = "טוען תשובה...";
+
+      try {
+        const res = await fetch("/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message })
+        });
+
+        const data = await res.json();
+        responseBox.innerText = data.reply || "לא התקבלה תשובה.";
+      } catch (err) {
+        responseBox.innerText = "שגיאה בתקשורת עם הבוט.";
+      }
+    }
+  </script>
+
+</body>
+</html>
